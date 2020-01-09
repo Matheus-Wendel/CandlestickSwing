@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -7,10 +8,14 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
 import org.jfree.data.xy.DefaultOHLCDataset;
 import org.jfree.data.xy.OHLCDataItem;
 
@@ -29,6 +34,29 @@ public class GeradorDeGraficoCandlestick {
 
 	}
 
+	// --------------IMPLEMENTACAO COM FACTORY
+	// IMPOSSIBILITA CUSTOMIZACAO DO GRAFICO (APLICADAS NO CandlestickRenderer)
+//	public void criaGrafico(String titulo) {
+//		List<Candlestick> candles = this.serie.getCandles();
+//		List<OHLCDataItem> data = new ArrayList<OHLCDataItem>();
+//
+//		for (Candlestick candlestick : candles) {
+//			data.add(new OHLCDataItem(candlestick.getData().getTime(), candlestick.getAbertura(),
+//					candlestick.getMaximo(), candlestick.getMinimo(), candlestick.getFechamento(),
+//					candlestick.getVolume()));
+//
+//		}
+//
+//		OHLCDataItem[] dataArray = new OHLCDataItem[data.size()];
+//
+//		dataArray = data.toArray(dataArray);
+//		dataset = new DefaultOHLCDataset("candle", dataArray);
+//		this.grafico = ChartFactory.createCandlestickChart(titulo, "Dias", "Preco", dataset, true);
+//		grafico.setAntiAlias(true);
+//	
+//	}
+	// --------------------------------------------
+
 	public void criaGrafico(String titulo) {
 		List<Candlestick> candles = this.serie.getCandles();
 		List<OHLCDataItem> data = new ArrayList<OHLCDataItem>();
@@ -44,8 +72,21 @@ public class GeradorDeGraficoCandlestick {
 
 		dataArray = data.toArray(dataArray);
 		dataset = new DefaultOHLCDataset("candle", dataArray);
-		this.grafico = ChartFactory.createCandlestickChart(titulo, "Dias", "Preco", dataset, true);
-		grafico.setAntiAlias(true);
+
+		ValueAxis timeAxis = new DateAxis("Dias");
+		NumberAxis valueAxis = new NumberAxis("preço");
+		XYPlot plot = new XYPlot(dataset, timeAxis, valueAxis, null);
+		CandlestickRenderer renderer = new CandlestickRenderer();
+		renderer.setAutoWidthGap(0.001);
+		renderer.setAutoWidthFactor(15);
+		renderer.setVolumePaint(Color.blue);
+		renderer.setAutoWidthGap(1);
+
+		plot.setRenderer(renderer);
+		JFreeChart chart = new JFreeChart(titulo, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+//	        currentTheme.apply(chart);
+		this.grafico = chart;
+
 	}
 
 	// ------------------- IMPLEMENTACAO SIMILAR USANDO
