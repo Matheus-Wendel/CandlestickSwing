@@ -183,9 +183,8 @@ public class ArgentumUI {
 			geradorDeGrafico.plotaIndicador(new MediaMovelPonderada(new IndicadorFechamento()));
 
 		}
-		
+
 		geradorDeGraficoCandlestick.criaGrafico("grafico Candle");
-		
 
 		JPanel grafico = geradorDeGrafico.getPanel();
 		JPanel graficoCandlestick = geradorDeGraficoCandlestick.getPanel();
